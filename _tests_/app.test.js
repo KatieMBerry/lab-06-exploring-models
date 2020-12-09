@@ -3,7 +3,7 @@ const request = require('supertest');
 const app = require('../lib/app');
 const pool = require('../lib/utils/pool');
 const fs = require('fs');
-const Customer = require('../lib/models/Customer')
+const Customer = require('../lib/models/Customer');
 
 
 describe('app tests', () => {
@@ -11,7 +11,7 @@ describe('app tests', () => {
         return pool.query(fs.readFileSync('./sql/setup.sql', 'utf-8'));
     });
 
-    afterEach(() => {
+    afterAll(() => {
         return pool.end();
     });
 
@@ -32,5 +32,37 @@ describe('app tests', () => {
             age: 35,
             email: 'marco@gmail.com'
         });
+    });
+
+    it('retrieves all customers from the database via GET', async () => {
+
+        const customer1 = await Customer.insert({
+            id: "1",
+            last_name: "Nucera",
+            first_name: "Marco",
+            age: 35,
+            email: "marco@gmail.com"
+        });
+
+        const customer2 = await Customer.insert({
+            id: "2",
+            last_name: "Moga",
+            first_name: "Misty",
+            age: 38,
+            email: "misty@gmail.com"
+        });
+
+        const customer3 = await Customer.insert({
+            id: "3",
+            last_name: "Gerdin",
+            first_name: "Matt",
+            age: 40,
+            email: "matt@gmail.com"
+        });
+
+        const response = await request(app)
+            .get('/customers')
+
+        expect(response.body).toEqual([customer1, customer2, customer3]);
     });
 });
