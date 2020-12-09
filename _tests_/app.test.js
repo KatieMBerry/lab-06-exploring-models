@@ -37,7 +37,6 @@ describe('app tests', () => {
     it('retrieves all customers from the database via GET', async () => {
 
         const customer1 = await Customer.insert({
-            id: "1",
             last_name: "Nucera",
             first_name: "Marco",
             age: 35,
@@ -45,7 +44,6 @@ describe('app tests', () => {
         });
 
         const customer2 = await Customer.insert({
-            id: "2",
             last_name: "Moga",
             first_name: "Misty",
             age: 38,
@@ -53,7 +51,6 @@ describe('app tests', () => {
         });
 
         const customer3 = await Customer.insert({
-            id: "3",
             last_name: "Gerdin",
             first_name: "Matt",
             age: 40,
@@ -64,5 +61,25 @@ describe('app tests', () => {
             .get('/customers')
 
         expect(response.body).toEqual([customer1, customer2, customer3]);
+    });
+
+    it('retrieves a customer by ID from the database via GET, and returns it', async () => {
+        const customer1 = await Customer.insert({
+            last_name: "Nucera",
+            first_name: "Marco",
+            age: 35,
+            email: "marco@gmail.com"
+        });
+
+        const response = await request(app)
+            .get(`/customers/${1}`);
+
+        expect(response.body).toEqual({
+            id: '1',
+            last_name: 'Nucera',
+            first_name: 'Marco',
+            age: 35,
+            email: 'marco@gmail.com'
+        });
     });
 });
