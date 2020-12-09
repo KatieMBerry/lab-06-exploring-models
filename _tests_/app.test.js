@@ -63,8 +63,8 @@ describe('app tests', () => {
         expect(response.body).toEqual([customer1, customer2, customer3]);
     });
 
-    it('retrieves a customer by ID from the database via GET, and returns it', async () => {
-        const customer1 = await Customer.insert({
+    it('retrieves a customer by ID from the database via GET', async () => {
+        const customer = await Customer.insert({
             last_name: "Nucera",
             first_name: "Marco",
             age: 35,
@@ -72,7 +72,7 @@ describe('app tests', () => {
         });
 
         const response = await request(app)
-            .get(`/customers/${1}`);
+            .get(`/customers/${customer.id}`);
 
         expect(response.body).toEqual({
             id: '1',
@@ -80,6 +80,29 @@ describe('app tests', () => {
             first_name: 'Marco',
             age: 35,
             email: 'marco@gmail.com'
+        });
+    });
+
+    it('updates a customer by ID via PUT, and returns it', async () => {
+        const customer = await Customer.insert({
+            last_name: "Nucera",
+            first_name: "Marco",
+            age: 35,
+            email: "marco@gmail.com"
+        });
+
+        const response = await request(app)
+            .put(`/customers/${customer.id}`)
+            .send({
+                last_name: "Nucera",
+                first_name: "Marco",
+                age: 35,
+                email: "marco@yahoo.com"
+            })
+
+        expect(response.body).toEqual({
+            ...customer,
+            email: "marco@yahoo.com"
         });
     });
 });
