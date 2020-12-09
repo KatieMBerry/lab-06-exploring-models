@@ -105,4 +105,25 @@ describe('app tests', () => {
             email: "marco@yahoo.com"
         });
     });
+
+    it('deletes a customer by ID via DELETE, and returns it', async () => {
+        const customer = await Customer.insert({
+            last_name: "Nucera",
+            first_name: "Marco",
+            age: 35,
+            email: "marco@gmail.com"
+        });
+
+        const response = await request(app)
+            .delete(`/customers/${customer.id}`)
+            .send(customer)
+
+        expect(response.body).toEqual({
+            id: "1",
+            last_name: "Nucera",
+            first_name: "Marco",
+            age: 35,
+            email: "marco@gmail.com"
+        });
+    });
 });
